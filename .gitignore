@@ -4,3 +4,7 @@ email/alfred-email.env
 # python
 __pycache__/
 *.pyc
+
+# dashboard data
+/dashboard/data/
+
