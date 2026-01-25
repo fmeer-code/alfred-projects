@@ -13,42 +13,40 @@ export default function Home() {
       <header className="mb-6">
         <h1 className="text-2xl font-bold">Alfred Dashboard (read-only)</h1>
         <p className="mt-1 text-sm text-neutral-600">
-          Internal status board: tasks, projects, and an idea board.
+          Tasks, projects, and idea board — securely exposed via Cloudflare Tunnel.
         </p>
       </header>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Section title="Tasks">
-          <ul className="list-disc pl-5">
-            <li>Gateway running as systemd user service</li>
-            <li>Email bridge: Gmail send + inbox poll → Telegram</li>
-            <li>Dashboard: MVP scaffolding (Next.js)</li>
-          </ul>
+        <Section title="Projects">
+          <p>
+            <Link className="underline" href="/projects">
+              View projects
+            </Link>
+          </p>
+          <p className="mt-2 text-xs text-neutral-500">Includes the dashboard project (URLs, tasks, ideas, health).</p>
         </Section>
 
-        <Section title="Projects">
-          <ul className="list-disc pl-5">
-            <li>Alfred setup on Ubuntu VPS</li>
-            <li>Secure web dashboard (this)</li>
-          </ul>
+        <Section title="Tasks">
+          <p>Per-project task lists (read-only for now).</p>
         </Section>
 
         <Section title="Idea board">
-          <p>
-            Coming next: simple columns (Ideas / Doing / Done) with cards, stored in SQLite.
-          </p>
+          <p>Per-project ideas are stored and displayed read-only for now.</p>
         </Section>
 
-        <Section title="Security">
-          <ul className="list-disc pl-5">
-            <li>Will be protected by a single strong password (HTTP Basic Auth)</li>
-            <li>Exposed via Cloudflare Tunnel (no open inbound port required)</li>
-          </ul>
-          <p className="mt-3">
-            <Link className="underline" href="/health">Health</Link>
+        <Section title="Activity">
+          <p>
+            <Link className="underline" href="/activity">
+              View activity log
+            </Link>
           </p>
         </Section>
       </div>
+
+      <footer className="mt-8 text-xs text-neutral-500">
+        Health endpoint: <Link className="underline" href="/health">/health</Link>
+      </footer>
     </main>
   );
 }
