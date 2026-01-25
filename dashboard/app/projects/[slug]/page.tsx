@@ -71,15 +71,34 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </Card>
 
         <Card title="Tasks">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="text-sm" style={{ opacity: 0.8 }}>
+              You can add/edit task details. Status is managed by Alfred.
+            </div>
+            <Link
+              className="rounded-lg border border-[color:var(--border)] bg-[color:var(--card)] px-3 py-1 text-sm font-semibold"
+              href={`/projects/${project.slug}/tasks/new`}
+            >
+              +
+            </Link>
+          </div>
           <div className="space-y-2">
             {tasks.map((t) => (
-              <div key={t.id} className="flex items-start justify-between gap-3 rounded-lg border border-[color:var(--border)] p-3">
-                <div>
-                  <div className="font-medium">{t.title}</div>
-                  <div className="text-xs text-[color:var(--foreground)]">{new Date(t.createdAt).toLocaleString()}</div>
+              <Link
+                key={t.id}
+                href={`/projects/${project.slug}/tasks/${t.id}`}
+                className="block rounded-lg border border-[color:var(--border)] p-3 hover:bg-[color:var(--card)]"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="font-medium">{t.title}</div>
+                    <div className="text-xs" style={{ opacity: 0.8 }}>
+                      {new Date(t.createdAt).toLocaleString()}
+                    </div>
+                  </div>
+                  <Badge text={t.status} />
                 </div>
-                <Badge text={t.status} />
-              </div>
+              </Link>
             ))}
           </div>
         </Card>

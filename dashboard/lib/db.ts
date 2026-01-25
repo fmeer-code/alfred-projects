@@ -21,6 +21,7 @@ export type Task = {
   id: number;
   projectId: number;
   title: string;
+  description: string;
   status: "todo" | "doing" | "done";
   createdAt: string;
 };
@@ -59,6 +60,7 @@ export function migrateAndSeed() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       projectId INTEGER NOT NULL,
       title TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
       status TEXT NOT NULL,
       createdAt TEXT NOT NULL,
       FOREIGN KEY(projectId) REFERENCES projects(id) ON DELETE CASCADE
@@ -103,12 +105,12 @@ export function migrateAndSeed() {
   const projectId = Number(info.lastInsertRowid);
 
   const insertTask = d.prepare(
-    "INSERT INTO tasks (projectId, title, status, createdAt) VALUES (?, ?, ?, ?)"
+    "INSERT INTO tasks (projectId, title, description, status, createdAt) VALUES (?, ?, ?, ?, ?)"
   );
-  insertTask.run(projectId, "Set up Next.js dashboard (scaffold)", "done", now);
-  insertTask.run(projectId, "Protect dashboard with password (basic auth)", "done", now);
-  insertTask.run(projectId, "Expose via Cloudflare named tunnel on dash.araneo.org", "done", now);
-  insertTask.run(projectId, "Add SQLite-backed projects/tasks/ideas", "doing", now);
+  insertTask.run(projectId, "Set up Next.js dashboard (scaffold)", "", "done", now);
+  insertTask.run(projectId, "Protect dashboard with password (basic auth)", "", "done", now);
+  insertTask.run(projectId, "Expose via Cloudflare named tunnel on dash.araneo.org", "", "done", now);
+  insertTask.run(projectId, "Add SQLite-backed projects/tasks/ideas", "", "doing", now);
 
   const insertIdea = d.prepare(
     "INSERT INTO ideas (projectId, column, text, createdAt) VALUES (?, ?, ?, ?)"
@@ -145,10 +147,57 @@ export function listTasks(projectId: number): Task[] {
   const d = getDb();
   return d
     .prepare(
-      "SELECT id, projectId, title, status, createdAt FROM tasks WHERE projectId = ? ORDER BY id DESC"
+      "SELECT id, projectId, title, description, status, createdAt FROM tasks WHERE projectId = ? ORDER BY id DESC"
     )
     .all(projectId) as Task[];
 }
+
+export function getTask(projectId: number, id: number): Task | null {
+  const d = getDb();
+  return (
+    d
+      .prepare(
+        "SELECT id, projectId, title, description, status, createdAt FROM tasks WHERE projectId = ? AND id = ?"
+      )
+      .get(projectId, id) as Task | undefined
+  ) ?? null;
+}
+
+export function createTask(projectId: number, title: string, description: string) {
+  const d = getDb();
+  const now = new Date().toISOString();
+  const info = d
+    .prepare(
+      "INSERT INTO tasks (projectId, title, description, status, createdAt) VALUES (?, ?, ?, 'todo', ?)"
+    )
+    .run(projectId, title.trim(), description.trim(), now);
+
+  d.prepare("INSERT INTO events (ts, kind, message) VALUES (?, ?, ?)").run(
+    now,
+    "task",
+    `Created task: ${title.trim()}`
+  );
+
+  return Number(info.lastInsertRowid);
+}
+
+export function updateTaskDetails(projectId: number, id: number, title: string, description: string) {
+  const d = getDb();
+  const now = new Date().toISOString();
+  d.prepare("UPDATE tasks SET title = ?, description = ? WHERE projectId = ? AND id = ?").run(
+    title.trim(),
+    description.trim(),
+    projectId,
+    id
+  );
+
+  d.prepare("INSERT INTO events (ts, kind, message) VALUES (?, ?, ?)").run(
+    now,
+    "task",
+    `Updated task: ${title.trim()}`
+  );
+}
+
 
 export function listIdeas(projectId: number): Idea[] {
   const d = getDb();
