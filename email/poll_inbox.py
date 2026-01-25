@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, re, subprocess, imaplib, email
+import os, re, subprocess, imaplib, email, socket
 from email.header import decode_header
 
 def load_env(path):
@@ -24,7 +24,6 @@ def dec(h):
     return out
 
 def text_snippet(msg, limit=400):
-    payload = None
     txt = ''
     if msg.is_multipart():
         for part in msg.walk():
@@ -69,36 +68,49 @@ def main():
     gmail = os.environ['GMAIL_ADDRESS']
     app_pw = os.environ['GMAIL_APP_PASSWORD']
 
-    M = imaplib.IMAP4_SSL('imap.gmail.com')
-    M.login(gmail, app_pw)
-    M.select('INBOX')
+    # Safety: avoid hanging forever in cron
+    socket.setdefaulttimeout(20)
 
-    typ, data = M.search(None, 'UNSEEN')
-    if typ != 'OK':
+    M = None
+    try:
+        M = imaplib.IMAP4_SSL('imap.gmail.com', timeout=20)
+        M.login(gmail, app_pw)
+        M.select('INBOX')
+
+        typ, data = M.search(None, 'UNSEEN')
+        if typ != 'OK':
+            return
+        ids = (data[0] or b'').split()
+        if not ids:
+            return
+
+        ids = ids[:5]
+        for uid in ids:
+            typ, msgdata = M.fetch(uid, '(RFC822)')
+            if typ != 'OK' or not msgdata or not msgdata[0]:
+                continue
+            raw = msgdata[0][1]
+            msg = email.message_from_bytes(raw)
+
+            frm = dec(msg.get('From'))
+            subj = dec(msg.get('Subject'))
+            snippet = text_snippet(msg)
+            summary = f"New email\nFrom: {frm}\nSubject: {subj}"
+            if snippet:
+                summary += f"\n\n{snippet}"
+            send_telegram(summary)
+
+            M.store(uid, '+FLAGS', '\\Seen')
+    except Exception as e:
+        # Keep silent; cron should be quiet. Uncomment to debug locally.
+        # send_telegram(f"Email poll error: {type(e).__name__}: {e}")
         return
-    ids = data[0].split()
-    if not ids:
-        return
-
-    ids = ids[:5]
-    for uid in ids:
-        typ, msgdata = M.fetch(uid, '(RFC822)')
-        if typ != 'OK' or not msgdata or not msgdata[0]:
-            continue
-        raw = msgdata[0][1]
-        msg = email.message_from_bytes(raw)
-
-        frm = dec(msg.get('From'))
-        subj = dec(msg.get('Subject'))
-        snippet = text_snippet(msg)
-        summary = f"New email\nFrom: {frm}\nSubject: {subj}"
-        if snippet:
-            summary += f"\n\n{snippet}"
-        send_telegram(summary)
-
-        M.store(uid, '+FLAGS', '\\Seen')
-
-    M.logout()
+    finally:
+        try:
+            if M is not None:
+                M.logout()
+        except Exception:
+            pass
 
 if __name__ == '__main__':
     main()
