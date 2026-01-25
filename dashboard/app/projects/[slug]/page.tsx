@@ -41,7 +41,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <header className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">{project.name}</h1>
-          <p className="mt-1 text-sm text-neutral-800">{project.description}</p>
+          <p className="mt-1 text-sm text-neutral-900">{project.description}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Badge text={`slug: ${project.slug}`} />
             <Badge text={`created: ${new Date(project.createdAt).toLocaleString()}`} />
