@@ -1,42 +1,7 @@
-import Link from "next/link";
-import { ensureSeeded } from "@/lib/seed";
-import { listProjects } from "@/lib/db";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default function ProjectsPage() {
-  ensureSeeded();
-  const projects = listProjects();
-
-  return (
-    <main className="mx-auto max-w-5xl p-6">
-      <header className="mb-6 flex items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">Projects</h1>
-          <p className="mt-1 text-sm text-[color:var(--foreground)]">Read-only project overview.</p>
-        </div>
-        <Link className="text-sm underline" href="/">
-          Home
-        </Link>
-      </header>
-
-      <div className="grid gap-3">
-        {projects.map((p) => (
-          <Link
-            key={p.id}
-            href={`/projects/${p.slug}`}
-            className="rounded-xl border border-[color:var(--border)] bg-[color:var(--card)] p-4 shadow-sm hover:bg-[color:var(--card)]"
-          >
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="font-semibold">{p.name}</div>
-                <div className="text-sm text-[color:var(--foreground)]">{p.description}</div>
-              </div>
-              <div className="text-xs text-[color:var(--foreground)]">{new Date(p.createdAt).toLocaleString()}</div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </main>
-  );
+  redirect("/");
 }
