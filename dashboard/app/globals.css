@@ -1,11 +1,15 @@
 @import "tailwindcss";
 
-/* Force a high-contrast, always-light theme.
-   This avoids iOS Safari / dark-mode overrides making text hard to read. */
+/* Dark mode (high contrast, iOS-friendly) */
 :root {
-  color-scheme: light;
-  --background: #ffffff;
-  --foreground: #000000;
+  color-scheme: dark;
+
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card: #111111;
+  --border: rgba(255, 255, 255, 0.14);
+  --muted: rgba(255, 255, 255, 0.78);
+  --muted2: rgba(255, 255, 255, 0.6);
 }
 
 @theme inline {
@@ -23,5 +27,5 @@ body {
 }
 
 a {
-  color: #000000;
+  color: var(--foreground);
 }

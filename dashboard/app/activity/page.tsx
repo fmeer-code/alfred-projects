@@ -13,25 +13,25 @@ export default function ActivityPage() {
       <header className="mb-6 flex items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Activity</h1>
-          <p className="mt-1 text-sm text-black">Recent changes (read-only).</p>
+          <p className="mt-1 text-sm text-[color:var(--foreground)]">Recent changes (read-only).</p>
         </div>
         <Link className="text-sm underline" href="/">
           Home
         </Link>
       </header>
 
-      <div className="rounded-xl border border-neutral-200 bg-white shadow-sm">
-        <div className="divide-y divide-neutral-200">
+      <div className="rounded-xl border border-[color:var(--border)] bg-[color:var(--card)] shadow-sm">
+        <div className="divide-y divide-[color:var(--border)]">
           {events.map((e) => (
             <div key={e.id} className="p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="text-sm font-semibold">{e.kind}</div>
-                <div className="text-xs text-black">{new Date(e.ts).toLocaleString()}</div>
+                <div className="text-xs text-[color:var(--foreground)]">{new Date(e.ts).toLocaleString()}</div>
               </div>
-              <div className="mt-1 text-sm text-black">{e.message}</div>
+              <div className="mt-1 text-sm text-[color:var(--foreground)]">{e.message}</div>
             </div>
           ))}
-          {events.length === 0 && <div className="p-4 text-sm text-black">No events yet.</div>}
+          {events.length === 0 && <div className="p-4 text-sm text-[color:var(--foreground)]">No events yet.</div>}
         </div>
       </div>
     </main>

@@ -5,15 +5,15 @@ import { getProjectBySlug, listIdeas, listTasks } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 const Badge = ({ text }: { text: string }) => (
-  <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-black">
+  <span className="inline-flex items-center rounded-full bg-[color:var(--card)] px-2 py-0.5 text-xs text-[color:var(--foreground)]">
     {text}
   </span>
 );
 
 const Card = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <section className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+  <section className="rounded-xl border border-[color:var(--border)] bg-[color:var(--card)] p-5 shadow-sm">
     <h2 className="text-lg font-semibold">{title}</h2>
-    <div className="mt-3 text-sm text-black">{children}</div>
+    <div className="mt-3 text-sm text-[color:var(--foreground)]">{children}</div>
   </section>
 );
 
@@ -25,7 +25,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     return (
       <main className="mx-auto max-w-3xl p-6">
         <h1 className="text-2xl font-bold">Not found</h1>
-        <p className="mt-2 text-sm text-black">No such project.</p>
+        <p className="mt-2 text-sm text-[color:var(--foreground)]">No such project.</p>
         <Link className="mt-4 inline-block underline" href="/projects">
           Back
         </Link>
@@ -41,7 +41,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <header className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">{project.name}</h1>
-          <p className="mt-1 text-sm text-black">{project.description}</p>
+          <p className="mt-1 text-sm text-[color:var(--foreground)]">{project.description}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Badge text={`slug: ${project.slug}`} />
             <Badge text={`created: ${new Date(project.createdAt).toLocaleString()}`} />
@@ -73,10 +73,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <Card title="Tasks">
           <div className="space-y-2">
             {tasks.map((t) => (
-              <div key={t.id} className="flex items-start justify-between gap-3 rounded-lg border border-neutral-200 p-3">
+              <div key={t.id} className="flex items-start justify-between gap-3 rounded-lg border border-[color:var(--border)] p-3">
                 <div>
                   <div className="font-medium">{t.title}</div>
-                  <div className="text-xs text-black">{new Date(t.createdAt).toLocaleString()}</div>
+                  <div className="text-xs text-[color:var(--foreground)]">{new Date(t.createdAt).toLocaleString()}</div>
                 </div>
                 <Badge text={t.status} />
               </div>
@@ -87,12 +87,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <Card title="Ideas">
           <div className="space-y-2">
             {ideas.map((i) => (
-              <div key={i.id} className="rounded-lg border border-neutral-200 p-3">
+              <div key={i.id} className="rounded-lg border border-[color:var(--border)] p-3">
                 <div className="flex items-center justify-between gap-3">
                   <div className="font-medium">{i.text}</div>
                   <Badge text={i.column} />
                 </div>
-                <div className="mt-1 text-xs text-black">{new Date(i.createdAt).toLocaleString()}</div>
+                <div className="mt-1 text-xs text-[color:var(--foreground)]">{new Date(i.createdAt).toLocaleString()}</div>
               </div>
             ))}
           </div>
