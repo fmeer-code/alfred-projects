@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ensureSeeded } from "@/lib/seed";
-import { getProjectBySlug, listIdeas, listTasks } from "@/lib/db";
+import { getProjectBySlug, listTasks } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +34,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   }
 
   const tasks = listTasks(project.id);
-  const ideas = listIdeas(project.id);
 
   return (
     <main className="mx-auto max-w-5xl p-6">
@@ -58,16 +57,22 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         <Card title="URLs">
           <ul className="list-disc pl-5">
             <li>
-              Project URL: <a className="underline" href={project.url}>{project.url}</a>
+              Project URL:{" "}
+              <a className="underline" href={project.url}>
+                {project.url}
+              </a>
             </li>
             <li>
-              Health: <a className="underline" href={project.healthUrl}>{project.healthUrl}</a>
+              Health:{" "}
+              <a className="underline" href={project.healthUrl}>
+                {project.healthUrl}
+              </a>
             </li>
           </ul>
         </Card>
 
         <Card title="Status">
-          <p>This is a read-only dashboard. Editing will come later.</p>
+          <p>Read-only for now; tasks can be created/edited by you.</p>
         </Card>
 
         <Card title="Tasks">
@@ -99,20 +104,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                   <Badge text={t.status} />
                 </div>
               </Link>
-            ))}
-          </div>
-        </Card>
-
-        <Card title="Ideas">
-          <div className="space-y-2">
-            {ideas.map((i) => (
-              <div key={i.id} className="rounded-lg border border-[color:var(--border)] p-3">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="font-medium">{i.text}</div>
-                  <Badge text={i.column} />
-                </div>
-                <div className="mt-1 text-xs text-[color:var(--foreground)]">{new Date(i.createdAt).toLocaleString()}</div>
-              </div>
             ))}
           </div>
         </Card>
