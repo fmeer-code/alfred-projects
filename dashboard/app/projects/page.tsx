@@ -13,7 +13,7 @@ export default function ProjectsPage() {
       <header className="mb-6 flex items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Projects</h1>
-          <p className="mt-1 text-sm text-neutral-600">Read-only project overview.</p>
+          <p className="mt-1 text-sm text-black">Read-only project overview.</p>
         </div>
         <Link className="text-sm underline" href="/">
           Home
@@ -30,9 +30,9 @@ export default function ProjectsPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <div className="font-semibold">{p.name}</div>
-                <div className="text-sm text-neutral-900">{p.description}</div>
+                <div className="text-sm text-black">{p.description}</div>
               </div>
-              <div className="text-xs text-neutral-500">{new Date(p.createdAt).toLocaleString()}</div>
+              <div className="text-xs text-black">{new Date(p.createdAt).toLocaleString()}</div>
             </div>
           </Link>
         ))}
