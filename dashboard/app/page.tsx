@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ensureSeeded } from "@/lib/seed";
 import { listProjects } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   ensureSeeded();
   const projects = listProjects();
@@ -10,7 +12,7 @@ export default function Home() {
     <main className="mx-auto max-w-5xl p-6">
       <header className="mb-6">
         <h1 className="text-2xl font-bold">Projects</h1>
-        <p className="mt-1 text-sm text-neutral-600">Select a project to view details (read-only).</p>
+        <p className="mt-1 text-sm text-neutral-800">Select a project to view details (read-only).</p>
       </header>
 
       <div className="grid gap-3">
@@ -23,7 +25,7 @@ export default function Home() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <div className="font-semibold">{p.name}</div>
-                <div className="text-sm text-neutral-600">{p.description}</div>
+                <div className="text-sm text-neutral-800">{p.description}</div>
               </div>
               <div className="text-xs text-neutral-500">{new Date(p.createdAt).toLocaleString()}</div>
             </div>

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ensureSeeded } from "@/lib/seed";
 import { getProjectBySlug, listIdeas, listTasks } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 const Badge = ({ text }: { text: string }) => (
   <span className="inline-flex items-center rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-700">
     {text}
@@ -15,9 +17,10 @@ const Card = ({ title, children }: { title: string; children: React.ReactNode })
   </section>
 );
 
-export default function ProjectPage({ params }: { params: { slug: string } }) {
+export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   ensureSeeded();
-  const project = getProjectBySlug(params.slug);
+  const { slug } = await params;
+  const project = getProjectBySlug(slug);
   if (!project) {
     return (
       <main className="mx-auto max-w-3xl p-6">
@@ -38,7 +41,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
       <header className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">{project.name}</h1>
-          <p className="mt-1 text-sm text-neutral-600">{project.description}</p>
+          <p className="mt-1 text-sm text-neutral-800">{project.description}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Badge text={`slug: ${project.slug}`} />
             <Badge text={`created: ${new Date(project.createdAt).toLocaleString()}`} />

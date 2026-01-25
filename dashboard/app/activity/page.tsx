@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ensureSeeded } from "@/lib/seed";
 import { listEvents } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default function ActivityPage() {
   ensureSeeded();
   const events = listEvents(100);

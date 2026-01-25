@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ensureSeeded } from "@/lib/seed";
 import { listProjects } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default function ProjectsPage() {
   ensureSeeded();
   const projects = listProjects();
