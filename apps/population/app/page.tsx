@@ -1,6 +1,6 @@
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center p-4">
+    <main className="min-h-screen bg-black text-white flex items-start justify-center pt-6 pb-4 px-4">
       <div className="w-full max-w-6xl">
         <p className="text-center text-xl text-white/70 mb-2">
           Population of Switzerland (simulation)
