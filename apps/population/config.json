@@ -1,0 +1,7 @@
+{
+  "initialPopulation": 8900000,
+  "fertilityRate": 1.4,
+  "lifespan": 80,
+  "startYear": 2025,
+  "endYear": 2100
+}

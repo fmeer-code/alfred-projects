@@ -1,11 +1,29 @@
-const START_YEAR = 2025;
-const END_YEAR = 2100;
-const LIFESPAN = 80;
+import fs from 'fs';
+import path from 'path';
 
-const initialPopulation = 8.9e6; // estimate
-const fertilityRate = 2.0; // children per 30y female (test)
+const cfgPath = path.resolve(process.cwd(), 'config.json');
+function loadConfig() {
+  try {
+    const raw = fs.readFileSync(cfgPath, 'utf8');
+    return JSON.parse(raw);
+  } catch (e) {
+    return {
+      initialPopulation: 8.9e6,
+      fertilityRate: 1.4,
+      lifespan: 80,
+      startYear: 2025,
+      endYear: 2100,
+    };
+  }
+}
 
 function simulatePopulationByAges() {
+  const cfg = loadConfig();
+  const START_YEAR = cfg.startYear;
+  const END_YEAR = cfg.endYear;
+  const LIFESPAN = cfg.lifespan;
+  const initialPopulation = cfg.initialPopulation;
+  const fertilityRate = cfg.fertilityRate;
   const years: number[] = [];
   const values: number[] = [];
 
@@ -74,7 +92,7 @@ export default function Home() {
         <div className="flex flex-col items-center">
           <div className="text-center text-base text-white/80 mb-6 space-y-2">
             <div>Population (estimate): ~8.9 million</div>
-            <div>Fertility rate (test): ~2.0</div>
+            <div>Fertility rate (estimate): ~1.4</div>
             <div>Muslim population (estimate): ~0.55 million</div>
             <div>Muslim fertility rate (estimate): ~2.0</div>
           </div>
