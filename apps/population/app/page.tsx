@@ -5,29 +5,27 @@ const LIFESPAN = 80;
 const initialPopulation = 8.9e6; // estimate
 const fertilityRate = 2.0; // children per 30y female (test)
 
-function simulatePopulation() {
+function simulatePopulationByAges() {
   const years: number[] = [];
   const values: number[] = [];
 
-  // equal distribution across ages 0..79
-  let cohortSize = initialPopulation / LIFESPAN;
-  let population = initialPopulation;
+  // initialize ages array: uniform distribution
+  const ages = new Array(LIFESPAN).fill(initialPopulation / LIFESPAN);
 
   for (let year = START_YEAR; year <= END_YEAR; year++) {
     years.push(year);
+    const population = ages.reduce((s, v) => s + v, 0);
     values.push(population);
 
-    // deaths: all 80-year-olds (one cohort)
-    const deaths = cohortSize;
+    // births come from 30-year-old females (age index 30)
+    const females30 = ages[30] * 0.5; // assume 50% female
+    const births = females30 * fertilityRate;
 
-    // births: all 30-year-old females (half of one cohort) * fertility rate
-    const births = (cohortSize * 0.5) * fertilityRate;
-
-    // update population
-    population = population - deaths + births;
-
-    // cohort size changes with new population distribution assumption
-    cohortSize = population / LIFESPAN;
+    // shift ages up by one year: ages[79] die (dropped)
+    for (let a = LIFESPAN - 1; a >= 1; a--) {
+      ages[a] = ages[a - 1];
+    }
+    ages[0] = births; // newborn cohort
   }
 
   return { years, values };
@@ -52,9 +50,7 @@ function buildPath(values: number[], width: number, height: number, padding: { l
 }
 
 export default function Home() {
-  const { years, values } = simulatePopulation();
-
-  // convert to millions for plotting & labels
+  const { years, values } = simulatePopulationByAges();
   const valuesM = values.map((v) => v / 1e6);
 
   const W = 1000;
