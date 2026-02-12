@@ -2,9 +2,13 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center p-4">
       <div className="w-full max-w-6xl">
-        <p className="text-center text-xl text-white/70 mb-4">
+        <p className="text-center text-xl text-white/70 mb-2">
           Population of Switzerland (simulation)
         </p>
+        <div className="flex items-center justify-center gap-8 text-base text-white/80 mb-6">
+          <div>Population (estimate): ~8.9 million</div>
+          <div>Fertility rate (estimate): ~1.4</div>
+        </div>
 
         <div className="bg-black">
           <svg viewBox="0 0 1000 560" className="w-full h-auto">
