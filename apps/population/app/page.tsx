@@ -1,4 +1,66 @@
+const START_YEAR = 2025;
+const END_YEAR = 2100;
+const LIFESPAN = 80;
+
+const initialPopulation = 8.9e6; // estimate
+const fertilityRate = 1.4; // children per 30y female (estimate)
+
+function simulatePopulation() {
+  const years: number[] = [];
+  const values: number[] = [];
+
+  // equal distribution across ages 0..79
+  let cohortSize = initialPopulation / LIFESPAN;
+  let population = initialPopulation;
+
+  for (let year = START_YEAR; year <= END_YEAR; year++) {
+    years.push(year);
+    values.push(population);
+
+    // deaths: all 80-year-olds (one cohort)
+    const deaths = cohortSize;
+
+    // births: all 30-year-old females (half of one cohort) * fertility rate
+    const births = (cohortSize * 0.5) * fertilityRate;
+
+    // update population
+    population = population - deaths + births;
+
+    // cohort size changes with new population distribution assumption
+    cohortSize = population / LIFESPAN;
+  }
+
+  return { years, values };
+}
+
+function buildPath(values: number[], width: number, height: number, padding: { l: number; r: number; t: number; b: number }) {
+  const { l, r, t, b } = padding;
+  const innerW = width - l - r;
+  const innerH = height - t - b;
+
+  const minY = Math.min(...values);
+  const maxY = Math.max(...values);
+  const range = maxY - minY || 1;
+
+  return values
+    .map((v, i) => {
+      const x = l + (innerW * i) / (values.length - 1);
+      const y = t + innerH - ((v - minY) / range) * innerH;
+      return `${i === 0 ? "M" : "L"}${x.toFixed(2)} ${y.toFixed(2)}`;
+    })
+    .join(" ");
+}
+
 export default function Home() {
+  const { years, values } = simulatePopulation();
+
+  const W = 1000;
+  const H = 560;
+  const pad = { l: 90, r: 50, t: 50, b: 90 };
+
+  const path = buildPath(values, W, H, pad);
+  const maxPop = Math.max(...values);
+
   return (
     <main className="min-h-screen bg-black text-white p-4">
       <div className="w-full max-w-6xl mx-auto">
@@ -15,20 +77,17 @@ export default function Home() {
           </div>
 
           <div className="bg-black w-full">
-            <svg viewBox="0 0 1000 560" className="w-full h-auto">
-              {/* Chart area (no border) */}
-              <rect x="90" y="50" width="860" height="420" fill="none" stroke="none" />
-
+            <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
               {/* X axis labels */}
               <text x="90" y="510" fill="white" fontSize="26">2025</text>
               <text x="375" y="510" fill="white" fontSize="26" textAnchor="middle">2050</text>
               <text x="665" y="510" fill="white" fontSize="26" textAnchor="middle">2075</text>
               <text x="950" y="510" fill="white" fontSize="26" textAnchor="end">2100</text>
 
-              {/* Y axis labels */}
+              {/* Y axis labels (0, mid, max) */}
               <text x="50" y="470" fill="white" fontSize="26" textAnchor="end">0</text>
-              <text x="50" y="260" fill="white" fontSize="26" textAnchor="end">5</text>
-              <text x="50" y="60" fill="white" fontSize="26" textAnchor="end">10</text>
+              <text x="50" y="260" fill="white" fontSize="26" textAnchor="end">{(maxPop / 2 / 1e6).toFixed(1)}</text>
+              <text x="50" y="60" fill="white" fontSize="26" textAnchor="end">{(maxPop / 1e6).toFixed(1)}</text>
 
               {/* Axis titles */}
               <text x="520" y="545" fill="white" fontSize="26" textAnchor="middle">Year (2025–2100)</text>
@@ -36,8 +95,8 @@ export default function Home() {
                 Population (millions)
               </text>
 
-              {/* Empty line placeholder */}
-              <path d="M90 470" stroke="white" strokeWidth="2" fill="none" strokeDasharray="6 6" />
+              {/* Simulated line */}
+              <path d={path} stroke="white" strokeWidth="3" fill="none" />
             </svg>
           </div>
         </div>
