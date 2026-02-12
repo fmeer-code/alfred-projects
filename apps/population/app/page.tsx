@@ -52,11 +52,11 @@ function buildPath(values: number[], width: number, height: number, padding: { l
 }
 
 export default function Home() {
-  const { years, values } = simulatePopulation();
+  const { values } = simulatePopulation();
 
   const W = 1000;
   const H = 560;
-  const pad = { l: 90, r: 50, t: 50, b: 90 };
+  const pad = { l: 110, r: 40, t: 50, b: 90 };
 
   const path = buildPath(values, W, H, pad);
   const maxPop = Math.max(...values);
@@ -79,19 +79,19 @@ export default function Home() {
           <div className="bg-black w-full">
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
               {/* X axis labels */}
-              <text x="90" y="510" fill="white" fontSize="26">2025</text>
-              <text x="375" y="510" fill="white" fontSize="26" textAnchor="middle">2050</text>
-              <text x="665" y="510" fill="white" fontSize="26" textAnchor="middle">2075</text>
-              <text x="950" y="510" fill="white" fontSize="26" textAnchor="end">2100</text>
+              <text x="110" y="510" fill="white" fontSize="26">2025</text>
+              <text x="390" y="510" fill="white" fontSize="26" textAnchor="middle">2050</text>
+              <text x="680" y="510" fill="white" fontSize="26" textAnchor="middle">2075</text>
+              <text x="960" y="510" fill="white" fontSize="26" textAnchor="end">2100</text>
 
               {/* Y axis labels (0, mid, max) */}
-              <text x="50" y="470" fill="white" fontSize="26" textAnchor="end">0</text>
-              <text x="50" y="260" fill="white" fontSize="26" textAnchor="end">{(maxPop / 2 / 1e6).toFixed(1)}</text>
-              <text x="50" y="60" fill="white" fontSize="26" textAnchor="end">{(maxPop / 1e6).toFixed(1)}</text>
+              <text x="80" y="470" fill="white" fontSize="26" textAnchor="end">0</text>
+              <text x="80" y="260" fill="white" fontSize="26" textAnchor="end">{(maxPop / 2 / 1e6).toFixed(1)}</text>
+              <text x="80" y="60" fill="white" fontSize="26" textAnchor="end">{(maxPop / 1e6).toFixed(1)}</text>
 
               {/* Axis titles */}
               <text x="520" y="545" fill="white" fontSize="26" textAnchor="middle">Year (2025–2100)</text>
-              <text x="20" y="260" fill="white" fontSize="26" textAnchor="middle" transform="rotate(-90 20 260)">
+              <text x="30" y="260" fill="white" fontSize="26" textAnchor="middle" transform="rotate(-90 30 260)">
                 Population (millions)
               </text>
 
