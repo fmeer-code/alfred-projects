@@ -3,7 +3,7 @@ const END_YEAR = 2100;
 const LIFESPAN = 80;
 
 const initialPopulation = 8.9e6; // estimate
-const fertilityRate = 1.4; // children per 30y female (estimate)
+const fertilityRate = 2.0; // children per 30y female (test)
 
 function simulatePopulation() {
   const years: number[] = [];
@@ -52,7 +52,7 @@ function buildPath(values: number[], width: number, height: number, padding: { l
 }
 
 export default function Home() {
-  const { values } = simulatePopulation();
+  const { years, values } = simulatePopulation();
 
   const W = 1000;
   const H = 560;
@@ -71,7 +71,7 @@ export default function Home() {
         <div className="flex flex-col items-center">
           <div className="text-center text-base text-white/80 mb-6 space-y-2">
             <div>Population (estimate): ~8.9 million</div>
-            <div>Fertility rate (estimate): ~1.4</div>
+            <div>Fertility rate (estimate): ~2.0</div>
             <div>Muslim population (estimate): ~0.55 million</div>
             <div>Muslim fertility rate (estimate): ~2.0</div>
           </div>
