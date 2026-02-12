@@ -5,9 +5,11 @@ export default function Home() {
         <p className="text-center text-xl text-white/70 mb-2">
           Population of Switzerland (simulation)
         </p>
-        <div className="flex items-center justify-center gap-8 text-base text-white/80 mb-6">
+        <div className="text-center text-base text-white/80 mb-6 space-y-2">
           <div>Population (estimate): ~8.9 million</div>
           <div>Fertility rate (estimate): ~1.4</div>
+          <div>Muslim population (estimate): ~0.55 million</div>
+          <div>Muslim fertility rate (estimate): ~2.0</div>
         </div>
 
         <div className="bg-black">
