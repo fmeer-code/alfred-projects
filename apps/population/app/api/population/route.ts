@@ -1,32 +1,58 @@
 import { NextResponse } from "next/server";
+import fs from "node:fs";
+import path from "node:path";
 
-const START_YEAR = 2025;
-const END_YEAR = 2100;
-const LIFESPAN = 80;
-const initialPopulation = 8.9e6;
-const fertilityRate = 2.0;
+export const dynamic = "force-dynamic";
 
-function simulate() {
+function loadConfig() {
+  const cfgPath = path.resolve(process.cwd(), "config.json");
+  const raw = fs.readFileSync(cfgPath, "utf8");
+  return JSON.parse(raw);
+}
+
+function simulateByAges(initialPop: number, fertility: number, lifespan: number, startYear: number, endYear: number) {
   const years: number[] = [];
   const values: number[] = [];
-  const ages = new Array(LIFESPAN).fill(initialPopulation / LIFESPAN);
+  const ages = new Array(lifespan).fill(initialPop / lifespan);
 
-  for (let year = START_YEAR; year <= END_YEAR; year++) {
+  for (let year = startYear; year <= endYear; year++) {
     years.push(year);
     values.push(ages.reduce((s, v) => s + v, 0));
 
     const females30 = ages[30] * 0.5;
-    const births = females30 * fertilityRate;
+    const births = females30 * fertility;
 
-    for (let a = LIFESPAN - 1; a >= 1; a--) ages[a] = ages[a - 1];
+    for (let a = lifespan - 1; a >= 1; a--) ages[a] = ages[a - 1];
     ages[0] = births;
   }
 
   return { years, values };
 }
 
-export const dynamic = "force-dynamic";
-
 export async function GET() {
-  return NextResponse.json(simulate());
+  const cfg = loadConfig();
+
+  const total0 = Number(cfg.initialPopulation);
+  const totalFert = Number(cfg.fertilityRate);
+  const lifespan = Number(cfg.lifespan);
+  const startYear = Number(cfg.startYear);
+  const endYear = Number(cfg.endYear);
+
+  const muslimInit = cfg.muslimInitialPopulation ? Number(cfg.muslimInitialPopulation) : null;
+  const muslimShare = Number(cfg.muslimShare ?? 0);
+  const muslim0 = muslimInit !== null ? muslimInit : total0 * muslimShare;
+  const muslimFert = Number(cfg.muslimFertility ?? totalFert);
+  const non0 = total0 - muslim0;
+  const nonFert = totalFert;
+
+  const total = simulateByAges(total0, totalFert, lifespan, startYear, endYear);
+  const muslim = simulateByAges(muslim0, muslimFert, lifespan, startYear, endYear);
+  const nonMuslim = simulateByAges(non0, nonFert, lifespan, startYear, endYear);
+
+  return NextResponse.json({
+    years: total.years,
+    total: total.values,
+    muslim: muslim.values,
+    nonMuslim: nonMuslim.values,
+  });
 }

@@ -3,5 +3,8 @@
   "fertilityRate": 1.4,
   "lifespan": 80,
   "startYear": 2025,
-  "endYear": 2100
+  "endYear": 2100,
+  "muslimShare": 0.062,
+  "muslimFertility": 2.0,
+  "muslimInitialPopulation": 550000
 }

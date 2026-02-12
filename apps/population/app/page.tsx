@@ -34,16 +34,17 @@ function simulateByAges(initialPop: number, fertility: number, lifespan: number,
   return { years, values };
 }
 
-function buildPath(values: number[], width: number, height: number, padding: { l: number; r: number; t: number; b: number }) {
+function buildPath(values: number[], width: number, height: number, padding: { l: number; r: number; t: number; b: number }, maxY: number) {
   const { l, r, t, b } = padding;
   const innerW = width - l - r;
   const innerH = height - t - b;
   const minY = 0;
-  const maxY = Math.max(...values, 1);
+  const top = Math.max(maxY, 1e-9);
+
   return values
     .map((v, i) => {
       const x = l + (innerW * i) / (values.length - 1);
-      const y = t + innerH - ((v - minY) / (maxY - minY)) * innerH;
+      const y = t + innerH - ((v - minY) / (top - minY)) * innerH;
       return `${i === 0 ? 'M' : 'L'}${x.toFixed(2)} ${y.toFixed(2)}`;
     })
     .join(' ');
@@ -56,8 +57,9 @@ export default function Home() {
   const LIFESPAN = cfg.lifespan;
   const total0 = cfg.initialPopulation;
   const totalFert = cfg.fertilityRate;
+  const muslimInit = cfg.muslimInitialPopulation ?? null;
   const muslimShare = cfg.muslimShare ?? 0.062;
-  const muslim0 = total0 * muslimShare;
+  const muslim0 = muslimInit !== null ? Number(muslimInit) : total0 * muslimShare;
   const muslimFert = cfg.muslimFertility ?? cfg.fertilityRate;
   const nonMuslim0 = total0 - muslim0;
   const nonMuslimFert = totalFert; // assume same unless configured
@@ -74,12 +76,12 @@ export default function Home() {
   const H = 560;
   const pad = { l: 110, r: 40, t: 50, b: 90 };
 
-  const pathTotal = buildPath(valuesM, W, H, pad);
-  const pathMus = buildPath(valuesMusM, W, H, pad);
-  const pathNon = buildPath(valuesNonM, W, H, pad);
-
-  const maxPop = Math.max(...valuesM);
+  const maxPop = Math.max(...valuesM, ...valuesMusM, ...valuesNonM);
   const midPop = maxPop / 2;
+
+  const pathTotal = buildPath(valuesM, W, H, pad, maxPop);
+  const pathMus = buildPath(valuesMusM, W, H, pad, maxPop);
+  const pathNon = buildPath(valuesNonM, W, H, pad, maxPop);
 
   return (
     <main className="min-h-screen bg-black text-white p-4">
