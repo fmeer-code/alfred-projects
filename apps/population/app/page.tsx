@@ -54,12 +54,15 @@ function buildPath(values: number[], width: number, height: number, padding: { l
 export default function Home() {
   const { years, values } = simulatePopulation();
 
+  // convert to millions for plotting & labels
+  const valuesM = values.map((v) => v / 1e6);
+
   const W = 1000;
   const H = 560;
   const pad = { l: 110, r: 40, t: 50, b: 90 };
 
-  const path = buildPath(values, W, H, pad);
-  const maxPop = Math.max(...values);
+  const path = buildPath(valuesM, W, H, pad);
+  const maxPop = Math.max(...valuesM);
 
   return (
     <main className="min-h-screen bg-black text-white p-4">
@@ -86,8 +89,8 @@ export default function Home() {
 
               {/* Y axis labels (0, mid, max) */}
               <text x="80" y="470" fill="white" fontSize="26" textAnchor="end">0</text>
-              <text x="80" y="260" fill="white" fontSize="26" textAnchor="end">{(maxPop / 2 / 1e6).toFixed(1)}</text>
-              <text x="80" y="60" fill="white" fontSize="26" textAnchor="end">{(maxPop / 1e6).toFixed(1)}</text>
+              <text x="80" y="260" fill="white" fontSize="26" textAnchor="end">{(maxPop / 2).toFixed(1)}</text>
+              <text x="80" y="60" fill="white" fontSize="26" textAnchor="end">{maxPop.toFixed(1)}</text>
 
               {/* Axis titles */}
               <text x="520" y="545" fill="white" fontSize="26" textAnchor="middle">Year (2025–2100)</text>
@@ -95,7 +98,7 @@ export default function Home() {
                 Population (millions)
               </text>
 
-              {/* Simulated line */}
+              {/* Simulated line (values in millions) */}
               <path d={path} stroke="white" strokeWidth="3" fill="none" />
             </svg>
           </div>
