@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Population Change Simulation — Switzerland</title>
+  <style>
+    html,body{height:100%;margin:0;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif}
+    .wrap{max-width:960px;margin:24px auto;text-align:center}
+    svg{width:100%;height:auto}
+    .legend{display:flex;justify-content:center;gap:16px;margin-bottom:8px}
+    .legend span{font-size:20px}
+    .dot{display:inline-block;width:12px;height:6px;margin-right:6px;vertical-align:middle}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>Population Change Simulation</h2>
+    <div style="margin-bottom:8px">
+      <label for="countrySelect" style="color:#ddd;margin-right:8px">Country</label>
+      <select id="countrySelect" style="background:#111;color:#fff;border:1px solid #333;padding:4px 8px">
+        <option value="switzerland" selected>Switzerland</option>
+      </select>
+    </div>
+    <div id="meta" style="opacity:.9;margin-bottom:8px">Loading...</div>
+    <div class="legend"><span><span class="dot" style="background:#fff"></span>Total</span><span><span class="dot" style="background:#ffd700"></span>Non‑Western</span></div>
+    <div id="chart"></div>
+    <div id="params" style="margin-top:18px;color:#ddd;font-size:14px"></div>
+  </div>
+
+  <script>
+    // Simple renderer — minimal JS to avoid breakage
+    function fmt(n){ return (typeof n==='number')?n.toLocaleString():n; }
+    fetch('/api/population').then(r=>r.json()).then(data=>{
+      const years=data.years;
+      const values=data.total.map(v=>v/1e6);
+      const nonWestern=data.nonWestern.map(v=>v/1e6);
+      const pct = values[0]>0? (nonWestern[0]/values[0])*100 : 0;
+      document.getElementById('meta').innerHTML = `Total: ${values[0].toFixed(2)}M · Non‑Western: ${nonWestern[0].toFixed(2)}M (<span style="color:#ff6666">${pct.toFixed(2)}%</span>)`;
+
+      const W=900,H=400,pad={l:80,r:40,t:40,b:80};
+      const innerW=W-pad.l-pad.r, innerH=H-pad.t-pad.b;
+      const maxY=Math.max(...values.concat(nonWestern));
+      function xy(i,v){ const x=pad.l + innerW*(i/(years.length-1)); const y=pad.t + innerH - ((v-0)/(maxY-0))*innerH; return [x,y]; }
+      function pathFor(arr){ return arr.map((v,i)=>{ const p=xy(i,v); return (i===0?'M':'L')+p[0].toFixed(2)+','+p[1].toFixed(2); }).join(' '); }
+
+      const xticks = (function(){ const t=[]; for(let i=0;i<4;i++){ t.push(years[Math.round(i*(years.length-1)/3)]); } return t; })();
+      const yticks = (function(){ const t=[]; for(let i=0;i<4;i++){ t.push(maxY*(i/3)); } return t; })();
+      let axes='';
+      xticks.forEach((t,i)=>{ const xi=pad.l + innerW*(i/(xticks.length-1)); axes += `<text x='${xi}' y='${H-20}' fill='#fff' font-size='27' text-anchor='middle'>${t}</text>`; });
+      yticks.forEach((v,i)=>{ const yi=pad.t + innerH - ((v-0)/(maxY-0))*innerH; axes += `<text x='${pad.l-10}' y='${yi+4}' fill='#fff' font-size='27' text-anchor='end'>${Number(v).toFixed(1)}</text>`; });
+
+      function areaPath(arr){ const pts = arr.map((v,i)=>{ const [x,y]=xy(i,v); return `${i===0?'M':'L'}${x},${y}`; }).join(' '); const last = xy(arr.length-1, arr[arr.length-1]); const first = xy(0, arr[0]); const baselineY = pad.t + innerH; return `${pts} L ${last[0]},${baselineY} L ${first[0]},${baselineY} Z`; }
+      const svg = `<svg viewBox='0 0 ${W} ${H}'><rect x='0' y='0' width='100%' height='100%' fill='none'/><text x='${pad.l+innerW/2}' y='22' fill='#fff' text-anchor='middle' font-size='32'>Population (millions)</text>${axes}<path d='${areaPath(values)}' fill='rgba(255,255,255,0.06)' stroke='none'></path><path d='${areaPath(nonWestern)}' fill='rgba(255,215,0,0.10)' stroke='none'></path><path d='${pathFor(nonWestern)}' stroke='#ffd700' fill='none' stroke-width='2'></path><path d='${pathFor(values)}' stroke='#fff' fill='none' stroke-width='3'></path></svg>`;
+      document.getElementById('chart').innerHTML = svg;
+
+      // params table (full)
+      fetch('/config.json').then(r=>r.json()).then(cfg=>{
+        const fmtNumber = n => typeof n === 'number' ? n.toLocaleString() : n;
+        const fmtDecimal = n => typeof n === 'number' ? Number(n).toFixed(2) : n;
+        const rows = [
+          ['Total population', fmtNumber(cfg.total_population) + ' people'],
+          ['Non‑Western fertility rate', fmtDecimal(cfg.fertility_rates && cfg.fertility_rates.non_western_background)],
+          ['Western/native fertility rate', fmtDecimal(cfg.fertility_rates && cfg.fertility_rates.western_native_background)],
+          ['Lifespan', (cfg.lifespan ? cfg.lifespan + ' years' : '')],
+          ['Start year', cfg.startYear],
+          ['End year', cfg.endYear],
+          ['Non‑Western initial population', fmtNumber(Math.round(cfg.total_population * (cfg.percentage_population_non_western_culture||0))) + ' people'],
+          ['Net migration per year', fmtNumber(cfg.net_migration_per_year||0) + ' people/year'],
+          ['Share of migrants from non‑western culture', (typeof cfg.percentage_migrants_from_non_western_culture === 'number' ? (cfg.percentage_migrants_from_non_western_culture*100).toFixed(1)+'%' : cfg.percentage_migrants_from_non_western_culture)],
+          ['Migrants (non‑western) per year', fmtNumber((cfg.net_migration_per_year||0) * (cfg.percentage_migrants_from_non_western_culture||0)) + ' people/year']
+        ];
+        const table = ['<table style="width:100%;max-width:760px;margin:8px auto;border-collapse:collapse">', '<thead><tr><th style="text-align:center;padding:6px 8px;border-bottom:1px solid #333">Parameter</th><th style="text-align:center;padding:6px 8px;border-bottom:1px solid #333">Value</th></tr></thead>','<tbody>'];
+        rows.forEach(r=>{ if(r[1]!==undefined) table.push(`<tr><td style="padding:6px 8px;border-bottom:1px solid #111;text-align:center">${r[0]}</td><td style="padding:6px 8px;border-bottom:1px solid #111;text-align:center">${r[1]}</td></tr>`)});
+        table.push('</tbody></table>');
+        document.getElementById('params').innerHTML = table.join('\n');
+      }).catch(()=>{ document.getElementById('params').innerText = 'Parameters: (using defaults)'; });
+
+      // re-enable tap/hover marker (safe)
+      try{
+        const svgEl = document.querySelector('#chart svg');
+        const vline = document.createElementNS('http://www.w3.org/2000/svg','line');
+        vline.setAttribute('y1', pad.t); vline.setAttribute('y2', pad.t+innerH);
+        vline.setAttribute('stroke', '#888'); vline.setAttribute('stroke-width','1'); vline.setAttribute('stroke-dasharray','4 4'); vline.setAttribute('visibility','hidden');
+        svgEl.appendChild(vline);
+        const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+        label.setAttribute('y', pad.t-8); label.setAttribute('fill','#fff'); label.setAttribute('font-size','27'); label.setAttribute('text-anchor','middle'); label.setAttribute('visibility','hidden');
+        svgEl.appendChild(label);
+        function clientToSvgX(clientX){ const rect = svgEl.getBoundingClientRect(); const x = clientX - rect.left; return (x / rect.width) * 900; }
+        function showAtClient(clientX){ const svgX = clientToSvgX(clientX); let t = (svgX - pad.l) / innerW; if (t<0) t=0; if (t>1) t=1; const idx = Math.round(t*(years.length-1)); const year = years[idx]; const tot = values[idx]; const nw = nonWestern[idx]; const px = pad.l + innerW*(idx/(years.length-1)); vline.setAttribute('x1', px); vline.setAttribute('x2', px); vline.setAttribute('visibility','visible'); label.setAttribute('x', px); label.textContent = String(year); label.setAttribute('visibility','visible'); const pctYear = tot>0 ? (nw/tot)*100 : 0; document.getElementById('meta').innerHTML = `Year ${year} — Total: ${tot.toFixed(2)}M · Non‑Western: ${nw.toFixed(2)}M (<span style="color:#ff6666">${pctYear.toFixed(2)}%</span>)`; document.title = `Population Change Simulation — Switzerland — Non‑Western ${pctYear.toFixed(2)}%`; }
+        function hide(){ vline.setAttribute('visibility','hidden'); label.setAttribute('visibility','hidden'); document.getElementById('meta').innerHTML = `Total: ${values[0].toFixed(2)}M · Non‑Western: ${nonWestern[0].toFixed(2)}M (<span style="color:#ff6666">${pct.toFixed(2)}%</span>)`; }
+        svgEl.addEventListener('pointermove', ev=> showAtClient(ev.clientX)); svgEl.addEventListener('pointerleave', ()=> hide()); svgEl.addEventListener('pointerdown', ev=> { showAtClient(ev.clientX); }); svgEl.addEventListener('pointerup', ()=> hide());
+      }catch(e){console.error('tap attach failed',e)}
+
+    }).catch(e=>{ document.getElementById('meta').innerText='Error loading data'; console.error(e); });
+  </script>
+</body>
+</html>
