@@ -1,0 +1,21 @@
+{
+  "name": "Germany",
+  "slug": "germany",
+  "total_population": 83500000,
+  "percentage_population_non_western_culture": 0.183,
+  "net_migration_per_year": 240000,
+  "percentage_migrants_from_non_western_culture": 0.724,
+  "fertility_rates": {
+    "non_western_background": 1.89,
+    "western_native_background": 1.26
+  },
+  "lifespan": 80,
+  "startYear": 2025,
+  "endYear": 2100,
+  "data_sources_and_years": [
+    "Statistisches Bundesamt (Destatis), 2024–2025",
+    "Federal Office for Migration and Refugees (BAMF) Migration Report, 2024",
+    "Eurostat Population and Migration Statistics, 2024",
+    "OECD International Migration Outlook, 2025"
+  ]
+}

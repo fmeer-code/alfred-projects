@@ -1,0 +1,15 @@
+{
+  "name": "Switzerland",
+  "slug": "switzerland",
+  "total_population": 9051029,
+  "percentage_population_non_western_culture": 0.0738,
+  "net_migration_per_year": 82800,
+  "percentage_migrants_from_non_western_culture": 0.17,
+  "fertility_rates": {
+    "non_western_background": 1.74,
+    "western_native_background": 1.21
+  },
+  "lifespan": 80,
+  "startYear": 2025,
+  "endYear": 2100
+}
