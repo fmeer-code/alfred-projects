@@ -11,11 +11,5 @@
   },
   "lifespan": 80,
   "startYear": 2025,
-  "endYear": 2100,
-  "data_sources_and_years": [
-    "Statistisches Bundesamt (Destatis), 2024–2025",
-    "Federal Office for Migration and Refugees (BAMF) Migration Report, 2024",
-    "Eurostat Population and Migration Statistics, 2024",
-    "OECD International Migration Outlook, 2025"
-  ]
+  "endYear": 2100
 }

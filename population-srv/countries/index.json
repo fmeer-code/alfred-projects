@@ -1,4 +1,7 @@
-[
-  { "slug": "switzerland", "name": "Switzerland" },
-  { "slug": "germany", "name": "Germany" }
-]
+{
+  "default": "switzerland",
+  "countries": [
+    { "slug": "switzerland", "name": "Switzerland" },
+    { "slug": "germany", "name": "Germany" }
+  ]
+}
