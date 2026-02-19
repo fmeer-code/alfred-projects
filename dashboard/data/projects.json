@@ -1,0 +1,19 @@
+[
+  {
+    "id": "email-access-2026-02-19",
+    "title": "Email access for Alfred/Clawdbot",
+    "slug": "email-access",
+    "description": "Configured Gmail sender for automated emails and tests.",
+    "details": {
+      "sender": "alfred.huber.business@gmail.com",
+      "credentials_path": "/root/clawd/email/alfred-email.env",
+      "note": "App password stored on host; used to send test email to florian.meer@icloud.com on 2026-02-19. Stored as pointer only.",
+      "actions": [
+        "Healthcheck and notifier configured for population.araneo.org",
+        "Systemd timer + path/service for notifications",
+        "Clawdbot relay used to send Telegram alerts"
+      ]
+    },
+    "created_at": "2026-02-19T16:44:00Z"
+  }
+]
