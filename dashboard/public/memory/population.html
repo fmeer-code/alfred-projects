@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Memory — Population</title>
+  <style>html,body{height:100%;margin:0;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif} .wrap{max-width:860px;margin:28px auto;padding:12px} a{color:#ffd700;text-decoration:none} pre{background:#111;padding:12px;border-radius:6px;color:#ddd}</style>
+</head>
+<body>
+  <div class="wrap">
+    <a href="index.html">← Memory</a>
+    <h1>Population (population.araneo.org)</h1>
+    <p>Summary of what we did:</p>
+    <ul>
+      <li>Investigated white screen issue — found cloudflared tunnel down and server bound to 127.0.0.1.</li>
+      <li>Restarted cloudflared-tunnel.service and verified the site responded (HTTP 200 via Cloudflare).</li>
+      <li>Added healthcheck and auto-restart: systemd timer + check script at population-srv/scripts/check_population_site.sh.</li>
+      <li>Added notifier plumbing: systemd path/service population-notify to trigger Clawdbot relay when failures occur.</li>
+      <li>Created KNOWN_ERRORS.md documenting the issue and fixes; committed as stable snapshot (stable-2026-02-14 tag locally).</li>
+    </ul>
+    <h3>Files & locations</h3>
+    <pre>/root/clawd/population-srv/
+- server.js
+- static/ (UI)
+- scripts/check_population_site.sh
+- KNOWN_ERRORS.md
+- CRON_INSTALL.md
+</pre>
+  </div>
+</body>
+</html>
