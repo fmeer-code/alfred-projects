@@ -39,7 +39,7 @@ Quick fixes (in order)
    - If necessary, change `app.listen(port, '127.0.0.1', ...)` → `app.listen(port, '0.0.0.0', ...)` and restart the population process.
    - Start/stop/restart the population service (depends on how it is run; if via systemd, use the service name). Example (if running manually):
      pkill -f server.js || true
-     cd /root/clawd/population-srv && nohup node server.js &
+     cd /root/clawd/populationSim/server && nohup node server.js &
 
 3) Inspect server logs and API endpoints
    - Check the API endpoints directly to see errors:

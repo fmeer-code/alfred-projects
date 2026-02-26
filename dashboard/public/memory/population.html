@@ -25,16 +25,16 @@
   <h1>Population — what we did so far</h1>
   <p>Summary of work done on the population service (population.araneo.org):</p>
   <ul>
-    <li>Created a small service under population-srv/ that serves country JSON and a static index.</li>
+    <li>Created a small service under populationSim/server/ that serves country JSON and a static index.</li>
     <li>Added a cloudflared named tunnel ingress mapping population.araneo.org → http://127.0.0.1:3002 (see server config).</li>
     <li>Installed a monitoring script and CRON helpers to restart cloudflared when the tunnel goes down.</li>
-    <li>Documented common errors in population-srv/KNOWN_ERRORS.md and CRON_INSTALL.md.</li>
+    <li>Documented common errors in populationSim/server/KNOWN_ERRORS.md and CRON_INSTALL.md.</li>
   </ul>
 
   <p>Files of interest:</p>
   <ul>
-    <li><code>population-srv/server.js</code></li>
-    <li><code>population-srv/countries/*.json</code></li>
+    <li><code>populationSim/server/server.js</code></li>
+    <li><code>populationSim/server/countries/*.json</code></li>
     <li><code>.cloudflared/config.yml</code> (ingress rules)</li>
   </ul>
 
