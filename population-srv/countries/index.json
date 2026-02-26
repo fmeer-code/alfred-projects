@@ -2,6 +2,10 @@
   "default": "switzerland",
   "countries": [
     { "slug": "switzerland", "name": "Switzerland" },
-    { "slug": "germany", "name": "Germany" }
+    { "slug": "germany", "name": "Germany" },
+    { "slug": "usa", "name": "United States" },
+    { "slug": "france", "name": "France" },
+    { "slug": "japan", "name": "Japan" },
+    { "slug": "uk", "name": "United Kingdom" }
   ]
 }

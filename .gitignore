@@ -8,3 +8,8 @@ __pycache__/
 # dashboard data
 /dashboard/data/
 
+# runtime artifacts
+*.pid
+/logs/
+population_notify_poller.*
+

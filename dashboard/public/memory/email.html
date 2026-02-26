@@ -1,27 +1,57 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Memory — Email</title>
-  <style>html,body{height:100%;margin:0;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif} .wrap{max-width:860px;margin:28px auto;padding:12px} a{color:#ffd700;text-decoration:none} pre{background:#111;padding:12px;border-radius:6px;color:#ddd}</style>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#111826;
+      --text:#e6edf3;
+      --muted:#9aa4b2;
+      --accent:#7aa2ff;
+      --border:#1f2a37;
+    }
+    body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:780px;margin:36px auto;color:var(--text);background:var(--bg);line-height:1.6}
+    a{color:var(--accent)}
+    pre{background:var(--card);padding:12px;border-radius:6px;overflow:auto;border:1px solid var(--border)}
+    code{color:#cbd5e1}
+    ul{padding-left:20px}
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <a href="index.html">← Memory</a>
-    <h1>Email (alfred.huber.business@gmail.com)</h1>
-    <p>Summary:</p>
-    <ul>
-      <li>Gmail sender address configured: <strong>alfred.huber.business@gmail.com</strong>.</li>
-      <li>Credentials stored at: <code>/root/clawd/email/alfred-email.env</code> (app password).</li>
-      <li>Test email sent to <em>florian.meer@icloud.com</em> successfully.</li>
-      <li>I recorded this in memory (memory/2026-02-19.md) with a pointer to the credentials (not copying the secret).</li>
-    </ul>
-    <h3>Files & locations</h3>
-    <pre>/root/clawd/email/alfred-email.env
-GMAIL_ADDRESS=alfred.huber.business@gmail.com
-GMAIL_APP_PASSWORD=(app password stored here)
-</pre>
-  </div>
+  <a href="./">← Back to memories</a>
+  <h1>Email — what we did so far</h1>
+  <p>Summary of work done related to email integration:</p>
+  <ul>
+    <li>Created environment file for email usage at <code>email/alfred-email.env</code>.</li>
+    <li>Prepared services and placeholders for sending notifications from Clawdbot (internal scripts reference the env file).</li>
+    <li>Planned next steps: wire a real SMTP/API key in email/alfred-email.env and test sending via staging.</li>
+  </ul>
+
+  <h2>Files of interest</h2>
+  <ul>
+    <li><code>email/alfred-email.env</code> — environment variables for SMTP/API tokens (keep secret)</li>
+    <li>Any scripts that call the notification/send endpoints from Clawdbot</li>
+  </ul>
+
+  <h2>How to send a test email (remember this)</h2>
+  <ul>
+    <li>Use the script: <code>email/send_email.py</code></li>
+    <li>It reads credentials from <code>email/alfred-email.env</code> (GMAIL_ADDRESS + GMAIL_APP_PASSWORD).</li>
+    <li>Command example:</li>
+  </ul>
+  <pre>python3 /root/clawd/email/send_email.py florian.meer@icloud.com "Test email from Alfred" "Hi Florian — this is a test email from Alfred."</pre>
+
+  <h2>Notes</h2>
+  <ul>
+    <li>Don't commit real credentials to the repo. Use host-level env or secret store.</li>
+  </ul>
+
+  <footer>
+    <div>Generated on: <span id="ts"></span></div>
+    <script>document.getElementById('ts').textContent=new Date().toISOString();</script>
+  </footer>
 </body>
 </html>

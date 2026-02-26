@@ -1,0 +1,15 @@
+{
+  "name": "France",
+  "slug": "france",
+  "total_population": 68000000,
+  "percentage_population_non_western_culture": 0.23,
+  "net_migration_per_year": 200000,
+  "percentage_migrants_from_non_western_culture": 0.7,
+  "fertility_rates": {
+    "non_western_background": 2.3,
+    "western_native_background": 1.7
+  },
+  "lifespan": 82,
+  "startYear": 2025,
+  "endYear": 2100
+}

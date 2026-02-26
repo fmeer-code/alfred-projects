@@ -1,0 +1,15 @@
+{
+  "name": "United Kingdom",
+  "slug": "uk",
+  "total_population": 67800000,
+  "percentage_population_non_western_culture": 0.20,
+  "net_migration_per_year": 250000,
+  "percentage_migrants_from_non_western_culture": 0.65,
+  "fertility_rates": {
+    "non_western_background": 2.1,
+    "western_native_background": 1.6
+  },
+  "lifespan": 81,
+  "startYear": 2025,
+  "endYear": 2100
+}

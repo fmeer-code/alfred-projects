@@ -1,31 +1,56 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Memory — Population</title>
-  <style>html,body{height:100%;margin:0;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif} .wrap{max-width:860px;margin:28px auto;padding:12px} a{color:#ffd700;text-decoration:none} pre{background:#111;padding:12px;border-radius:6px;color:#ddd}</style>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#111826;
+      --text:#e6edf3;
+      --muted:#9aa4b2;
+      --accent:#7aa2ff;
+      --border:#1f2a37;
+    }
+    body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:780px;margin:36px auto;color:var(--text);background:var(--bg);line-height:1.6}
+    a{color:var(--accent)}
+    pre{background:var(--card);padding:12px;border-radius:6px;overflow:auto;border:1px solid var(--border)}
+    code{color:#cbd5e1}
+    ul{padding-left:20px}
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <a href="index.html">← Memory</a>
-    <h1>Population (population.araneo.org)</h1>
-    <p>Summary of what we did:</p>
-    <ul>
-      <li>Investigated white screen issue — found cloudflared tunnel down and server bound to 127.0.0.1.</li>
-      <li>Restarted cloudflared-tunnel.service and verified the site responded (HTTP 200 via Cloudflare).</li>
-      <li>Added healthcheck and auto-restart: systemd timer + check script at population-srv/scripts/check_population_site.sh.</li>
-      <li>Added notifier plumbing: systemd path/service population-notify to trigger Clawdbot relay when failures occur.</li>
-      <li>Created KNOWN_ERRORS.md documenting the issue and fixes; committed as stable snapshot (stable-2026-02-14 tag locally).</li>
-    </ul>
-    <h3>Files & locations</h3>
-    <pre>/root/clawd/population-srv/
-- server.js
-- static/ (UI)
-- scripts/check_population_site.sh
-- KNOWN_ERRORS.md
-- CRON_INSTALL.md
-</pre>
-  </div>
+  <a href="./">← Back to memories</a>
+  <h1>Population — what we did so far</h1>
+  <p>Summary of work done on the population service (population.araneo.org):</p>
+  <ul>
+    <li>Created a small service under population-srv/ that serves country JSON and a static index.</li>
+    <li>Added a cloudflared named tunnel ingress mapping population.araneo.org → http://127.0.0.1:3002 (see server config).</li>
+    <li>Installed a monitoring script and CRON helpers to restart cloudflared when the tunnel goes down.</li>
+    <li>Documented common errors in population-srv/KNOWN_ERRORS.md and CRON_INSTALL.md.</li>
+  </ul>
+
+  <p>Files of interest:</p>
+  <ul>
+    <li><code>population-srv/server.js</code></li>
+    <li><code>population-srv/countries/*.json</code></li>
+    <li><code>.cloudflared/config.yml</code> (ingress rules)</li>
+  </ul>
+
+  <h2>Next steps / notes</h2>
+  <ul>
+    <li>Ensure the cloudflared tunnel credentials are valid on the host (credentials-file referenced in ~/.cloudflared/config.yml).</li>
+    <li>Consider adding a small health-check endpoint for external uptime monitoring.</li>
+  </ul>
+
+  <h2>Recent commands / snippets</h2>
+  <pre>sudo systemctl restart cloudflared-tunnel.service
+journalctl -u cloudflared-tunnel.service -n 200 --no-pager</pre>
+
+  <footer>
+    <div>Generated on: <span id="ts"></span></div>
+    <script>document.getElementById('ts').textContent=new Date().toISOString();</script>
+  </footer>
 </body>
 </html>
